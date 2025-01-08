@@ -1,5 +1,5 @@
 {
-    "name": "symfony/var-dumper",
+    "name": "sailingdeveloper/var-dumper",
     "type": "library",
     "description": "Provides mechanisms for walking through any arbitrary PHP variable",
     "keywords": ["dump", "debug"],
@@ -13,6 +13,10 @@
         {
             "name": "Symfony Community",
             "homepage": "https://symfony.com/contributors"
+        },
+        {
+            "name": "Thijs de Maa",
+            "email": "maa.thijsde@gmail.com",
         }
     ],
     "require": {
