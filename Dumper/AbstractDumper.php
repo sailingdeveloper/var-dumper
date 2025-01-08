@@ -215,7 +215,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
         }, E_WARNING);
 
         // Attempt the conversion
-        $converted = iconv($fromCharset, $toCharset, $string);
+        $converted = @iconv($fromCharset, $toCharset, $string);
 
         // Restore original error handler
         restore_error_handler();
