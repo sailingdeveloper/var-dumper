@@ -190,41 +190,22 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
             throw new \RuntimeException('Unable to convert a non-UTF-8 string to UTF-8: required function iconv() does not exist. You should install ext-iconv or symfony/polyfill-iconv.');
         }
 
-        if (false !== $c = $this->safeIconv($this->charset, 'UTF-8', $s)) {
+        set_error_handler(fn () => false, E_WARNING);
+
+        if (false !== $c = @iconv($this->charset, 'UTF-8', $s)) {
+            restore_error_handler();
+
             return $c;
         }
-        if ('CP1252' !== $this->charset && false !== $c = $this->safeIconv('CP1252', 'UTF-8', $s)) {
+
+        if ('CP1252' !== $this->charset && false !== $c = @iconv('CP1252', 'UTF-8', $s)) {
+            restore_error_handler();
+
             return $c;
         }
 
-        return iconv('CP850', 'UTF-8', $s);
-    }
-
-    /**
-     * Safely attempts to convert $string from $fromCharset to $toCharset.
-     * Returns the converted string on success, or false on failure.
-     */
-    protected function safeIconv(string $fromCharset, string $toCharset, string $string): string|bool
-    {
-        // We’ll store any error message here
-        $errorMessage = null;
-
-        // Set a custom error handler to catch iconv’s warnings
-        set_error_handler(function ($errno, $errstr) use (&$errorMessage) {
-            $errorMessage = $errstr; // capture the warning message
-        }, E_WARNING);
-
-        // Attempt the conversion
-        $converted = @iconv($fromCharset, $toCharset, $string);
-
-        // Restore original error handler
         restore_error_handler();
 
-        // If iconv() returned false or we captured a warning, consider it a failure
-        if ($converted === false || null !== $errorMessage) {
-            return false;
-        }
-
-        return $converted;
+        return iconv('CP850', 'UTF-8', $s);
     }
 }
